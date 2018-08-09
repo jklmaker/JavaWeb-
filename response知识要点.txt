@@ -1,1 +1,47 @@
-﻿response的运行流程(尤其注意tomcat缓冲区)
+﻿通过response设置响应行(状态码)
+	setStatus(int sc)
+	
+设置响应头
+	setHeader(String name, String value)
+	
+	定时刷新:response.setHeader("refresh", "5;url=http://www.baidu.com");	//5秒后刷新
+	重定向:sendRedicrect方法(本质：先设置状态码,再设置响应头location)
+
+设置响应体
+	文本:getWriter()
+		获得字符流
+		通过字符流的write(String s)方法可以将字符串设置到response缓冲区中
+		Tomcat将response缓冲区中的内容组装成Http响应返回给浏览器端。
+		
+	字节:getOutputStream()
+		获得字节流
+		通过该字节流的write(byte[] bytes)向response缓冲区中写入字节
+		Tomcat服务器将字节内容组成Http响应返回给浏览器。
+	
+	中文乱码问题:response.setContentType("text/html;charset=UTF-8");
+	等同于setCharacterEncoding(设置写入response缓冲区的字符编码) + setContentType(设置浏览器读取时采用的字符编码)
+	
+=============================================================================================
+案例:完成文件下载
+	1)什么情况下会文件下载:
+		浏览器不能解析的文件就下载
+	2)什么情况下需要在服务器端编写文件下载代码:
+		理论上，浏览器能解析的格式需要编写文件下载
+		实际开发中，只要是需要下载的文件都编写文件下载代码
+		
+	实质:java文件拷贝，将文件从服务器端拷贝到浏览器端
+	操作:将服务器端的文件使用InputStream读取到，在使用ServletOutputStream写到response缓冲区中
+	
+	设置两个响应头，告知浏览器文件的类型和文件的打开方式
+		1）告知浏览器文件的类型：response.setContentType(文件的MIME类型);
+		2）告示浏览器文件的打开方式是下载：
+		response.setHeader("Content-Disposition","attachment;filename=文件名称");
+		
+	解决下载中文文件名乱码问题:
+		原理:不同的浏览器默认对下载文件的编码方式不同,需要利用响应头的User-Agent属性确定浏览器再做处理
+		
+=============================================================================================
+response细节点:
+	1)response获得的流(getOutputStream)无需手动关闭,tomcat容器会关闭
+	2)getWriter()和getOutputStream()不可同时使用
+		
