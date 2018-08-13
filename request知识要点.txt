@@ -1,0 +1,60 @@
+﻿Http请求:
+	请求行:请求方式post/get	请求资源	协议版本
+	请求头(很多键值对key:value)	浏览器告诉服务器的一些信息
+	请求体(仅post请求有):post请求参数
+	
+	get请求:参数在url后面	xxx?username=zhangsan&password=123
+
+request获得客户机的信息:getRemoteAddr()-->获得访问客户端的IP地址
+
+
+request获得请求行:
+	String getMethod()--------->获取客户端的请求方式
+	String getContextPath()---->获取web应用的名字
+	String getQueryString()---->获取请求行中的参数部分(url中?后面的内容)
+	
+request获得请求头:
+	String getHeader(String name)
+	(refer头可做防盗链)
+	
+request获得请求体:
+	String getParameter(String name)
+	Map<String,String[]> getparameterMap()
+	(上述两种方法也可获取get请求参数)
+	
+	解决post/get提交乱码:
+		post:	request.setCharacterEncoding("UTF-8");
+		get:	parameter = new String(parameter.getBytes("iso8859-1"),"utf-8");
+		
+===================================================================
+request是域对象(setAttribute/getAttribute/removeAttribute)
+作用范围:一次请求中
+===================================================================
+request完成请求转发(注意原理)
+	request.getRequestDispatcher(String path).forward(ServletRequest request,ServletResponse response);
+	注意：转发与重定向的区别？
+		1）重定向两次请求，转发一次请求
+		2）重定向地址栏的地址变化，转发地址不变
+		3）重新定向可以访问外部网站 转发只能访问内部资源
+		4）转发的性能要优于重定向
+===================================================================
+ServletContext域与Request域的生命周期比较:
+	ServletContext：
+		创建：服务器启动
+		销毁：服务器关闭
+		域的作用范围：整个web应用
+	request：
+		创建：访问时创建request
+		销毁：响应结束request销毁
+		域的作用范围：一次请求中
+===================================================================
+注意：客户端地址与服务器端地址的写法？
+	客户端地址：是客户端去访问服务器的地址，服务器外部的地址
+		特点：写上web应用名称	
+		eg:直接输入地址/重定向
+
+	服务器端地址：
+		服务器内部资源的跳转的地址
+		特点：不需要写web应用的名称
+		eg:转发
+		
