@@ -13,37 +13,66 @@
 			加大服务器存储数据的压力
 			
 ====================================================
-Cookie技术:将用户数据存储到客户端
+Cookie技术:将用户数据存储到客户端的技术
+
 	1)服务器向客户端发送一个cookie
 		创建cookie:	
 			Cookie cookie = new Cookie(String name,String value)
 		设置cookie在客户端的持久化时间:
 			cookie.setMaxAge(int seconds)
-		设置cookie的携带路径
-			
+		设置cookie的携带路径:
+			cookie.setPath(String path)
+		向客户端发送cookie:
+			response.addCookie(Cookie cookie)
+		删除cookie:使用同名同路径的持久化时间为0的cookie进行覆盖即可
 		
-	如果不设置持久化时间，cookie会存储在浏览器的内存中，浏览器关闭cookie信息销毁（会话级别的cookie）
-	如果设置持久化时间，cookie信息会被持久化到浏览器的磁盘文件里
-	Cookie不能存储中文
-	Cookie会以响应头的形式发给客户端
+		
+		如果不设置持久化时间，cookie会存储在浏览器的内存中，浏览器关闭cookie信息销毁（会话级别的cookie）
+		如果设置持久化时间，cookie信息会被持久化到浏览器的磁盘文件里
+		Cookie不能存储中文
+		Cookie会以响应头的形式发给客户端
+		如果不设置携带路径，那么该cookie信息会在访问产生该cookie的web资源所在的路径都携带cookie信息
+		
+************************
+	2)服务器端接收客户端携带的cookie
+		cookie信息是以请求头的形式发送给服务器端的(Cookie:name=zhangsan)
+		
+		通过request获得所有cookie----->Cookie[] cookies = request.getCookies()
+		遍历数组 for each
 ====================================================
-session技术是基于cookie技术----cookie技术
+session技术:
+	将用户数据存储到服务器端的技术
+	服务器为每个客户端开辟一块内存空间
+	客户端需要每次都携带一个标识ID去服务器中寻找属于自己的内存空间
+	Session的实现基于Cookie,Seesion需要借助于Cookie存储用户的唯一性标识JSSEIONID
+	
+	1)获得session对象
+		HttpSession session = request.getSession();
+		获得专属于当前会话的session对象
+		如果服务器没有该会话的session,则创建并返回;
+			否则，直接返回属于该会话的session对象
+		实质:判断Http请求的JSESSIONID在服务器上是否已经存在与之对应的session
+		
+		
+	2)session也是域对象(setAttribute/getAttribute/removeAttribute)
+	
+	3)session的生命周期
+		何时创建:第一次执行request.getSession()时创建
+		何时销毁:
+			服务器关闭
+			session过期(默认30min,可在web.xml中自定义存活时间)
+				注:从不操作服务器端的资源时开始计时
+		手动销毁session:
+			session.invalidate()
+			
+	4)生命周期:
+		默认在一次会话中(一次会话中,任意资源共用一个session对象)
+	浏览器关闭,session不会销毁
+	
+	5)session的持久化
+		思路:用具有持久化时间的(非会话级别的)cookie覆盖原有的存放JSESSIONID的cookie
+	
+	
 存储session编号---------------JSESSIONID
 
 发送session编号,根据编号寻找session区域位置,这些操作是客户端和服务器自动完成，无需手动编码
-
-session也是域对象
-
-====================================================
-session生命周期:
-	创建:第一次执行request.getSession()创建
-	销毁:
-		1)服务器关闭(非正常关闭)
-		2)session过期(默认30min)
-			Question:时间的起算点 从何时开始计算30分钟
-			从客户端不操作服务器资源时开始计时
-			
-			可在web.xml中配置session存活时间
-		3)手动销毁
-			session.invalidate()
-	作用域:一次会话中任何资源公用一个session
