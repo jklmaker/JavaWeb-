@@ -1,0 +1,84 @@
+﻿jsp脚本和注释
+	jsp脚本:
+		1)<% java代码 %>			内部的java代码会被翻译到service方法内部
+		2)<%= java代码 %>			内部的java代码会被翻译到out.print(xxx)作为参数
+		3)<%! java代码 %>			内部的java代码会被翻译为sevlet类的成员(成员变量/成员方法)
+
+	jsp注释:		不同注释可见范围不同
+		1)html注释 <!-- -->		jsp源码	翻译后的servlet 浏览器显示的html源码
+		2)java注释	// /**/		jsp源码	翻译后的servlet
+		3)jsp注释   <%-  -%>		jsp源码
+		
+=============================================
+jsp运行原理:jsp本质就是servlet
+	jsp在第一次访问就会被web容器翻译成servlet(tomcat的work目录下),再执行servlet
+	过程
+		第一次访问hello.jsp----->生成hello_jsp.java----->编译运行
+
+=============================================
+jsp指令
+	1)page指令(实际开发中默认)
+	<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
+	常用属性:
+		language:jsp脚本中可以嵌入的语言(只能为java)
+		contentType:
+			翻译为servlet后:response.setContentType("text/html;charset=utf-8")
+		pageEncoding:当前jsp文件本身的编码--->内部可以包含ContentType
+		session:jsp页面在翻译时是否自动创建session
+		import:导入java的包
+		errorPage:当当前页面出错后跳转到哪个页面
+		isErrorPage:当前页面是否是一个处理错误的页面
+		
+	通过配置web.xml设置web应用的全局错误页面:
+		<error-page>
+			<error-code>404</error-code>
+			<location>/error.jsp</location>
+		</error-page>
+		
+	2)include指令(静态包含)
+		页面包含指令,可将一个jsp页面包含到另一个jsp页面当中
+		<%@include file="被包含的文件地址" %>
+		
+	3)tablib指令
+		在jsp页面中引入标签库(jstl标签库/structs2标签库)
+		<%@ taglib uri="标签库地址" prefix="前缀"%>
+		
+==========================================================
+JSP隐式对象(9个):out/request/response/config/session/application/page/pageContext/exception
+
+	out				向客户端输出内容	JspWriter
+		out.write()
+		out缓冲区默认为8kb,可用page指令设置缓冲区大小(buffer属性)
+			设置为0表示关闭out缓冲区,直接写入response缓冲区
+			(例:比较out.write(aaa)和response.getWriter.write(aaa)的打印先后顺序:response先打印)
+	
+	pageContext		JSP页面的上下文对象
+		page对象不是pageContext对象!(page=this)
+		1)pageContext是一个域对象(setAttribute/getAttribute/removeAttribute)
+			pageContext可在其他域中存取数据
+		2)pageContext可获得其他8大隐式对象
+		3)findAttribute(String name)
+			依次从pageContext/request/session/application域中获取属性
+			在某个域中获取后将不在向后寻找
+==========================================================
+四大作用域总结:
+	page(pagecontext域)				当前jsp页面
+	request域						一次请求
+	session域						一次会话
+	application域(ServletContext)	整个web应用
+	
+==========================================================
+jsp标签(jsp动作)
+
+	1)动态包含:
+		<jsp:include page="xxx.jsp" />
+	2)请求转发:
+		<jsp:forward page="xxx.jsp" />
+		
+	注:静态包含与动态包含的区别?
+		静态包含直接将被包含页面的servlet代码写入到包含页面的servlet,
+			work目录下只有包含页面的java文件
+		动态包含分别将包含页面与被包含页面的servlet翻译出来，只是在包含页面的service方法中include被包含页面,
+			work目录下既有包含页面的servlet文件也有被包含页面的servlet文件
+
