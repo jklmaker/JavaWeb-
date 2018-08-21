@@ -1,0 +1,59 @@
+﻿EL技术:嵌入在jsp页面内部,用于替代jsp中脚本的编写
+
+作用:
+	1)EL从四大域中取出数据		${EL表达式}
+		${pageScope.key}			获取pageContext域的值
+		${requestScope.key}			获取request域的值
+		${sessionScope.key}			获取session域中的值
+		${applicationScope.key}		获取application域(servletContext域)中的值
+		${key}	依次从pageContext域,request域,session域,application域中寻找属性
+				获取属性后将不会继续查找
+				
+		e.g.	获取普通字符串/User对象的某一属性值/List<User>某个元素的某一属性值
+		
+	2)EL11个内置对象
+		pageScope/requestScope/sessionScope/applicationScope
+			用于获取JSP域中数据
+		param/paramValues		接收参数		类似request.getParameter(String param)/getParameterValues()
+		header/headerValues		获取请求头信息	类似request.getHeader(String key)	
+		initParam		获取全局初始化参数		this.getServletContext().getInitParameter(String name)
+		cookie			cookie对象				request.getCookies()/cookie.getName()/cookie.getValue()
+		pageContext(重要)
+		
+	3)pageContext对象:可以获得其他八大对象
+		获取web应用名称:	${pageContext.request.contextPath}
+	
+	4)EL执行表达式
+		${1+1}
+		${empty user}	判断user对象是否为空
+		${null==user?true:false}
+		......
+		
+================================================================================
+JSTL技术
+	JSTL(jsp standard tag library---jsp标准标签库)
+	以标签形式嵌入jsp页面,用于完成业务逻辑
+
+	1)常用标签库Core/标签库URI/prefix
+	
+	2)导入(导入jar包/taglib指令)
+	
+	3)JSTL核心库常用标签
+		<c:if test="">xxxxxx</c:if>
+			test:返回boolean的条件表达式
+			
+		<c:forEach begin="" end="" var="">xxxxxx</c:forEach>
+		begin:起始值		end:终止值	var:循环变量
+		
+		<c:forEach items="" var="">
+		item:通常是el表达式,遍历的数组或容器
+		var:循环变量
+		
+				1）遍历List<String>的值
+				
+				2）遍历List<User>的值
+				
+				3）遍历Map<String,String>的值
+				
+				4）遍历Map<String,User>的值
+		
