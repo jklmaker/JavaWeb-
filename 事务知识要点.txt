@@ -1,0 +1,40 @@
+﻿事务:
+	一件事情由n个组成单元组成,这n个组成单元要么全部成功,要么全部失败
+	
+=========================================================
+
+mysql事务控制:
+	默认:		一条sql语句就是一个事务
+	开启事务:		start transaction;
+	提交事务:		commit;		从开启事务到提交事务,中间的所有sql都有效,真正的更新数据库
+	回滚事务:		rollback;	从开启事务到提交事务,中间的所有sql都无效,数据库没有被更新
+
+=========================================================
+
+JDBC事务控制:
+	默认:		自动事务		每执行exeute...方法,事务自动提交
+	开启事务:		conn.setAutoCommit(false)
+	提交事务:		conn.commit()
+	回滚事务:		conn.rollback()
+	注意:执行sql的connection对象必须和开启事务的connection对象一致!!!
+	
+=========================================================
+	
+DBUtils事务控制(实质也是通过jdbc的connection对象)
+	QueryRunner
+		有参构造 
+			QueryRunner runner = new QueryRunner(DataSource ds);
+				使用DataSource(连接池)作为参数初始化QueryRunner
+				QueryRunner会从连接池中获得一个connection
+				使用获得的connection数据库连接对象操作数据库
+		无参构造
+			QueryRunner runner = new QueryRunner();
+				由于没有将数据源传入runner
+				在操作数据库时必须使用有Connection参数的方法
+
+=========================================================
+
+	ThreadLocal:通过线程绑定的方式传递参数
+	
+事务的特性:ACID
+并发问题(由隔离性决定):脏读、不可重复读、虚读-----通过设置数据库的隔离级别来解决
