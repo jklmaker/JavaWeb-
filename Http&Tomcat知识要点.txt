@@ -1,0 +1,86 @@
+﻿HTTP(Hypertext Transfer Protocol)
+	超文本传输协议
+	提供发布和接收HTML页面的方法
+
+===================================================
+HTTP协议的组成
+	Http请求
+	Http响应
+
+===================================================
+HTTP请求
+	请求行
+		请求方式:GET/POST
+		请求资源的路径
+		HTTP协议版本
+
+	请求头(大量的键值对key:value)
+		referer(防盗链)
+		If-Modified-Since(本地缓存的最后变更时间)
+		Cookie
+		User-Agent(客户端浏览器信息/操作系统信息)
+		Content-Type
+		Accept(浏览器可支持的MIME类型text/html,text/css,image/*,...)
+		...
+	请求体
+		i)post请求:参数存放在请求体中
+			eg:username=zs&password=123
+		ii)get请求:参数直接封装在url中
+			eg:http://localhost:8888/WEB10/index.jsp?username=zs&password=123
+
+===================================================
+HTTP响应
+	响应行
+		HTTP协议版本
+		状态码(200-请求成功/302-请求重定向/304-拿本地缓存/404-请求资源不存在/500-服务器内部错误/...)
+		状态信息
+
+	响应头(大量的键值对key:value)
+		Location:指定响应的路径,需要与状态码302配合使用以完成页面跳转
+		Content-Type:响应正文的MIME类型	text/html;charset=utf-8
+		Content-Disposition:通知浏览器以下载的方式解析正文	attachment;filename=xxx.zip
+		Set-Cookie:服务器向浏览器写入cookie
+		Last-Modified:服务器通知浏览器,文件的最后修改时间
+		......
+	响应体
+		服务器回写给客户端的页面正文,浏览器将正文加载到内存,然后解析渲染显示页面内容
+
+===================================================
+WEB开发常见概念
+	B/S系统和C/S系统
+		Browser/Server	浏览器/服务器	网站
+		Client/Server	客户端/服务器	QQ/大型游戏/...
+	web应用服务器:
+		供向外部发布web资源的服务器
+	web资源:
+		存在于web应用服务器可供外界访问的资源
+		静态资源:html/css/js/图片/视频/...
+		动态资源:JSP/Servlet/ASP/PHP/...
+	JAVAWEB领域:动态资源认为java代码动态生成html
+	请求和响应:
+	请求的url地址:协议/域名/端口/资源路径/资源名/...
+
+===================================================
+常用web应用服务器:
+	weblogic
+	websphere
+	tomcat
+
+===================================================
+Tomcat下载安装
+===================================================
+Tomcat目录结构
+	bin	脚本目录	startup.bat/shutdown.bat/...
+	conf	配置文件目录	核心配置文件server.xml/用户权限配置文件tomcat-users.xml/web项目默认配置文件web.xml
+	lib	依赖库		放置jar包
+	logs	日志文件
+	temp	临时文件目录
+	webapps	发布web项目时web项目所存放的目录
+	work	jsp文件处理目录
+
+===================================================
+Tomcat启动/运行
+===================================================
+Web应用的目录结构
+===================================================
+eclipse绑定tomcat并发布应用
